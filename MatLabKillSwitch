@@ -1,0 +1,34 @@
+% Initialize the EV3 object and connect to the brick
+myev3 = legoev3();
+
+% Connect motors to ports A and B
+motorLeft = motor(myev3, 'A');
+motorRight = motor(myev3, 'B');
+
+% Set the motor speed
+motorLeft.Speed = 50;  % Speed for the left motor
+motorRight.Speed = 50; % Speed for the right motor
+
+% Start the motors
+start(motorLeft);
+start(motorRight);
+
+% Main loop: check for kill switch (back button) press
+while true
+    % Read the state of the back button
+    buttonState = readButton(myev3, 'back');
+    
+    % If the back button is pressed, stop the motors and exit
+    if buttonState == 1
+        disp('Kill switch activated. Stopping motors...');
+        stop(motorLeft);  % Stop the left motor
+        stop(motorRight); % Stop the right motor
+        break;            % Exit the loop
+    end
+    
+    % Small delay to prevent CPU overload
+    pause(0.1);  % Check button status every 100ms
+end
+
+% Clean up the resources
+clear motorLeft motorRight;
