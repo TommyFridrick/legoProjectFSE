@@ -1,0 +1,38 @@
+import ev3dev.actuators.lego.motors.EV3LargeRegulatedMotor;
+import ev3dev.sensors.Button;
+import lejos.hardware.port.MotorPort;
+
+public class EV3KillSwitch {
+    public static void main(String[] args) {
+        // Initialize motors (A and B ports)
+        EV3LargeRegulatedMotor motorLeft = new EV3LargeRegulatedMotor(MotorPort.A);
+        EV3LargeRegulatedMotor motorRight = new EV3LargeRegulatedMotor(MotorPort.B);
+
+        // Start the motors
+        motorLeft.setSpeed(500);  // Set speed for the left motor
+        motorRight.setSpeed(500); // Set speed for the right motor
+        motorLeft.forward();      // Start the left motor moving forward
+        motorRight.forward();     // Start the right motor moving forward
+
+        // Main loop: check for kill switch (back button) press
+        while (true) {
+            // If the back button is pressed, stop the motors and exit
+            if (Button.ESCAPE.isDown()) {
+                System.out.println("Kill switch activated. Stopping motors...");
+                motorLeft.stop();  // Stop the left motor
+                motorRight.stop(); // Stop the right motor
+                break;             // Exit the loop
+            }
+            // Small delay to prevent CPU overload
+            try {
+                Thread.sleep(100);  // Check button status every 100ms
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Clean up the resources
+        motorLeft.close();
+        motorRight.close();
+    }
+}
